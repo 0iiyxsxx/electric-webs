@@ -1,0 +1,296 @@
+:root {
+    --bg-dark: #050505;
+    --bg-panel: rgba(20, 20, 25, 0.6);
+    --electric-blue: #00f3ff;
+    --electric-purple: #bc13fe;
+    --text-main: #ffffff;
+    --text-dim: #8888aa;
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow: hidden; /* Prevent scroll on mobile */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* --- Ambient Background --- */
+.ambient-glow {
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 
+0.08), transparent 60%);
+    z-index: -1;
+    animation: pulse-bg 10s infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes pulse-bg {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* --- Screens & Transitions --- */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s var(--ease-elastic), visibility 0.6s;
+}
+
+.screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+}
+
+/* --- Main Menu UI --- */
+.content-wrapper {
+    text-align: center;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    max-width: 90%;
+    width: 400px;
+}
+
+.brand-header h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, var(--electric-blue), #ffffff, 
+var(--electric-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.subtitle {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+
+/* --- Magnetic Button --- */
+.magnetic-btn {
+    position: relative;
+    background: transparent;
+    border: 1px solid var(--electric-blue);
+    color: var(--electric-blue);
+    padding: 1.2rem 3rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.magnetic-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 
+0.2), transparent);
+    transition: 0.5s;
+}
+
+.magnetic-btn:hover::before {
+    left: 100%;
+}
+
+.magnetic-btn:hover {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+    background: rgba(0, 243, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.magnetic-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- Footer / GitHub --- */
+.footer-link {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 20;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.github-link:hover {
+    color: var(--text-main);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+}
+
+.github-link svg {
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.github-link:hover svg {
+    transform: scale(1.1);
+}
+
+/* --- AR Screen --- */
+#ar-screen {
+    background: #000;
+    justify-content: flex-start; /* Align top for video */
+}
+
+#input-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Mirror effect */
+    opacity: 0.4; /* Dim video slightly so lines pop */
+}
+
+#output-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Mirror canvas to match video */
+    z-index: 5;
+}
+
+.ar-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+    pointer-events: none; /* Let clicks pass through to canvas if needed 
+*/
+}
+
+.icon-btn {
+    pointer-events: auto;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s;
+}
+
+.icon-btn:active {
+    background: var(--electric-blue);
+    color: black;
+    transform: scale(0.9);
+}
+
+.status-indicator {
+    pointer-events: auto;
+    background: rgba(0, 243, 255, 0.1);
+    border: 1px solid var(--electric-blue);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: var(--electric-blue);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--electric-blue);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* --- Mobile Optimization --- */
+@media (max-width: 768px) {
+    .brand-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .magnetic-btn {
+        padding: 1rem 2rem;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        width: 90%;
+        padding: 1.5rem;
+    }
+    
+    .footer-link {
+        bottom: 1.5rem;
+        left: 1.5rem;
+    }
+}
