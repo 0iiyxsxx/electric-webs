@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#050508">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="dxio's electric webs — hold electricity between your hands">
+  <title>dxio's electric webs</title>
+
+  <!-- Fonts: Orbitron (futuristic display) + Rajdhani (clean technical body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- MediaPipe Hands (pinned stable version) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1632090738/camera_utils.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       BACKGROUND — Particle field canvas (always rendered behind)
+  ================================================================ -->
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+  <!-- ================================================================
+       SCREEN 1 — MAIN MENU
+  ================================================================ -->
+  <div id="menu" class="screen active" role="main">
+
+    <!-- Decorative scanline overlay -->
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <!-- Corner decorations -->
+    <div class="corner corner--tl" aria-hidden="true"></div>
+    <div class="corner corner--tr" aria-hidden="true"></div>
+    <div class="corner corner--bl" aria-hidden="true"></div>
+    <div class="corner corner--br" aria-hidden="true"></div>
+
+    <div class="menu-content">
+
+      <!-- Title block -->
+      <div class="title-block">
+        <div class="title-sub" aria-hidden="true">
+          <span class="sub-line"></span>
+          <span class="sub-text">DXIO</span>
+          <span class="sub-line"></span>
+        </div>
+        <h1 class="title-main" data-text="electric webs">
+          <span class="title-word" data-text="electric">electric</span>
+          <span class="title-word title-word--accent" data-text="webs">webs</span>
+        </h1>
+        <p class="tagline">hold electricity between your hands</p>
+      </div>
+
+      <!-- Start CTA -->
+      <div class="cta-block">
+        <button id="startBtn" class="btn-start" aria-label="Start experience — camera required">
+          <span class="btn-bg" aria-hidden="true"></span>
+          <span class="btn-shimmer" aria-hidden="true"></span>
+          <span class="btn-label">
+            <span class="btn-icon" aria-hidden="true">⚡</span>
+            START
+          </span>
+          <span class="btn-corner btn-corner--tl" aria-hidden="true"></span>
+          <span class="btn-corner btn-corner--tr" aria-hidden="true"></span>
+          <span class="btn-corner btn-corner--bl" aria-hidden="true"></span>
+          <span class="btn-corner btn-corner--br" aria-hidden="true"></span>
+        </button>
+
+        <div class="req-note" role="note">
+          <span class="req-icon" aria-hidden="true">◈</span>
+          <span>Camera required &nbsp;·&nbsp; Use both hands for the full effect</span>
+        </div>
+      </div>
+
+    </div><!-- /.menu-content -->
+
+    <!-- GitHub link — bottom-left -->
+    <a
+      href="https://github.com/0iiyxsx"
+      target="_blank"
+      rel="noopener noreferrer"
+      id="githubLink"
+      class="gh-link"
+      aria-label="GitHub profile: 0iiyxsx"
+    >
+      <svg class="gh-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+      </svg>
+      <span class="gh-username">0iiyxsx</span>
+    </a>
+
+    <!-- Version tag — bottom-right -->
+    <div class="version-tag" aria-hidden="true">v1.0.0</div>
+
+  </div><!-- /#menu -->
+
+  <!-- ================================================================
+       SCREEN 2 — CAMERA / EXPERIENCE
+  ================================================================ -->
+  <div id="cameraScreen" class="screen" aria-label="Hand tracking experience">
+
+    <!-- Main camera canvas — video + electric effects -->
+    <canvas id="cameraCanvas"></canvas>
+
+    <!-- Hidden video source for MediaPipe -->
+    <video id="video" autoplay playsinline muted aria-hidden="true"></video>
+
+    <!-- ---- HUD overlay ---- -->
+    <div class="hud" aria-live="polite">
+
+      <!-- Top bar -->
+      <div class="hud-top">
+        <div class="hud-brand">
+          <span class="hud-dot" aria-hidden="true"></span>
+          <span id="statusText" class="hud-status-text">Initializing...</span>
+        </div>
+        <button id="backBtn" class="btn-back" aria-label="Back to menu" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5"/>
+            <path d="M12 5l-7 7 7 7"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="hud-bottom">
+        <span id="handsInfo" class="hud-hands-info">Waiting for hands...</span>
+      </div>
+
+    </div><!-- /.hud -->
+
+    <!-- ---- Loading overlay ---- -->
+    <div id="loadingOverlay" class="overlay overlay--loading" role="status" aria-label="Loading hand tracker">
+      <div class="load-visual">
+        <div class="load-ring load-ring--outer"></div>
+        <div class="load-ring load-ring--inner"></div>
+        <div class="load-icon" aria-hidden="true">⚡</div>
+      </div>
+      <p class="load-text" id="loadingText">Activating hand tracker...</p>
+      <p class="load-sub">Please allow camera access</p>
+    </div>
+
+    <!-- ---- Permission denied overlay ---- -->
+    <div id="permissionOverlay" class="overlay overlay--permission hidden" role="alert">
+      <div class="perm-card">
+        <div class="perm-glyph" aria-hidden="true">⊗</div>
+        <h2 class="perm-title">Camera Blocked</h2>
+        <p class="perm-body">Electric webs requires camera access to track your hands. Please allow camera permission in your browser settings.</p>
+        <button id="retryBtn" class="btn-retry">
+          <span>Try Again</span>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /#cameraScreen -->
+
+  <script src="script.js"></script>
+</body>
+</html>

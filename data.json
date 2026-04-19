@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "dxio's electric webs",
+    "version": "1.0.0",
+    "author": "dxio"
+  },
+  "github": {
+    "username": "0iiyxsx",
+    "url": "https://github.com/0iiyxsx"
+  },
+  "theme": {
+    "primaryColor":    "#00d4ff",
+    "secondaryColor":  "#0066ff",
+    "accentColor":     "#ff0077",
+    "backgroundColor": "#050508",
+    "textColor":       "#e0f0ff"
+  },
+  "handTracking": {
+    "maxHands": 2,
+    "minDetectionConfidence": 0.70,
+    "minTrackingConfidence":  0.50
+  },
+  "electricEffect": {
+    "segments":    10,
+    "jitter":      20,
+    "glowSize":    26,
+    "flickerRate": 0.08,
+    "lineWidth":   2
+  },
+  "particles": {
+    "count":               55,
+    "speed":               0.38,
+    "connectionDistance":  130,
+    "size":                1.5
+  }
+}
